@@ -15,6 +15,7 @@ include_directories(${INCLUDE_DIRS})
 add_library(codal-jacdac ${SOURCE_FILES})
 
 target_link_libraries(
+    codal-jacdac
     codal-core
 )
 
