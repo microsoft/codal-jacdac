@@ -2,6 +2,7 @@
 
 extern "C" {
 #include "jd_client.h"
+#include "jacscript.h"
 }
 
 #include "codal_target_hal.h"

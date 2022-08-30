@@ -11,6 +11,8 @@ void jd_alloc_init() {}
 void jd_alloc_stack_check() {}
 
 void *jd_alloc(uint32_t size) {
+    if (size == 0)
+        size = 1;
     void *r = device_malloc(size);
     if (!r)
         target_panic(20);
