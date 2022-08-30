@@ -1,0 +1,19 @@
+{
+    "name": "codal-jacdac",
+    "dependencies": {
+        "device": "file:../../libs/device"
+    },
+    "codal": {
+      "libraries": [
+        "https://github.com/microsoft/codal-jacdac#main"
+      ]
+    },
+    "description": "",
+    "files": [
+        "jdc.cpp",
+        "flash.cpp",
+        "shims.d.ts",
+        "jdc.ts"
+    ],
+    "preferredEditor": "tsprj"
+}
