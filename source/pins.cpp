@@ -25,10 +25,6 @@ int pin_get(int pin) {
     return -1;
 }
 
-#define PIN_PULL_DOWN -1
-#define PIN_PULL_NONE 0
-#define PIN_PULL_UP 1
-
 void pin_setup_input(int pin, int pull) {
     if ((uint8_t)pin == NO_PIN)
         return;
