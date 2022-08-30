@@ -5,6 +5,7 @@ using namespace codal;
 //#define ENABLE_PIN_LOG 1
 
 #define DEVICE_ID DEVICE_ID_JACDAC_PHYS
+#define DEVICE_ID_CYCLE DEVICE_ID_JACDAC_CONTROL_SERVICE
 
 #define LOG(msg, ...) DMESG("JD: " msg, ##__VA_ARGS__)
 //#define LOG(...) ((void)0)
@@ -109,6 +110,11 @@ static void tim_callback(Event e) {
         tim_cb = NULL;
         f();
     }
+}
+
+REAL_TIME_FUNC
+static void work_callback(Event e) {
+    jd_process_everything();
 }
 
 void tim_init() {
@@ -310,4 +316,10 @@ void jdhw_init(DMASingleWireSerial *dmasws) {
     tim_init();
     // set_tick_timer(0);
     uart_init_();
+
+    jd_init();
+
+    EventModel::defaultEventBus->listen(DEVICE_ID_CYCLE, 1, work_callback,
+                                        MESSAGE_BUS_LISTENER_DROP_IF_BUSY);
+    system_timer_event_every_us(10000, DEVICE_ID_CYCLE, 1);
 }
