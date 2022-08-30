@@ -1,5 +1,12 @@
 #include "CodalDmesg.h"
 
+#if defined(NRF52832_XXAA) || defined(NRF52832_XXAB) || defined(NRF52833_XXAA) ||                  \
+    defined(NRF52840_XXAA)
+#ifndef NRF52_SERIES
+#define NRF52_SERIES
+#endif
+#endif
+
 #define JD_LOG DMESG
 
 #define JD_WR_OVERHEAD 45
@@ -19,3 +26,9 @@
 #define JD_SEND_FRAME_SIZE 1024
 
 #define JD_CONFIG_STATUS 0
+
+#ifdef NRF52_SERIES
+#define JD_BRIDGE 1
+int mbbridge_send_frame(void *frame);
+#define JD_BRIDGE_SEND(f) mbbridge_send_frame(f)
+#endif

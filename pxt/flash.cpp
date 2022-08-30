@@ -10,10 +10,6 @@ CODAL_FLASH *largeStoreFlash();
 
 static jacscriptmgr_cfg_t cfg;
 
-#define MAX_PROG_SIZE 16 // k
-#define STORAGE_OFFSET ((SPI_FLASH_SIZE - MAX_PROG_SIZE) * 1024)
-#define PAGE_MASK (FLASH_PAGE_SIZE - 1)
-
 extern "C" {
 void flash_program(void *dst, const void *src, uint32_t len) {
     JD_ASSERT(cfg.program_base != NULL);

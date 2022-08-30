@@ -13,7 +13,7 @@ void jd_alloc_stack_check() {}
 void *jd_alloc(uint32_t size) {
     if (size == 0)
         size = 1;
-    void *r = device_malloc(size);
+    void *r = malloc(size);
     if (!r)
         target_panic(20);
     memset(r, 0, size);
@@ -22,7 +22,7 @@ void *jd_alloc(uint32_t size) {
 
 void jd_free(void *ptr) {
     if (ptr)
-        device_free(ptr);
+        free(ptr);
 }
 
 uint8_t jd_connected_blink;

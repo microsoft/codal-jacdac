@@ -4,6 +4,8 @@
 
 namespace jdc {
 
+void bridge_init();
+
 /**
  * Start jacdac-c stack
  */
@@ -24,6 +26,7 @@ void start() {
 #endif
 
     jdhw_init(sws);
+    bridge_init();
 }
 
 } // namespace jdc
