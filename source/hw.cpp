@@ -98,7 +98,8 @@ static void pin_pulse() {
 
 void jd_panic(void) {
     target_panic(PANIC_JACDAC);
-    while (1);
+    while (1)
+        ;
 }
 
 REAL_TIME_FUNC
