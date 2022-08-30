@@ -13,5 +13,3 @@ extern "C" {
 #define PANIC_JACDAC 777
 
 void jdhw_init(codal::DMASingleWireSerial *dmasws);
-
-
