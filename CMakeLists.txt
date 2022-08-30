@@ -29,6 +29,8 @@ list(APPEND SOURCE_FILES
     "jacdac-c/source/interfaces/tx_queue.c"
     "jacdac-c/services/jd_status_light.c"
     "jacdac-c/services/power.c"
+    "jacdac-c/services/button.c"
+    "jacdac-c/services/jd_sensor.c"
     "jacdac-c/client/rolemgr.c"
     "jacdac-c/client/routing.c"
     "jacdac-c/jacscript/aggbuffer.c"

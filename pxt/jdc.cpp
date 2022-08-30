@@ -2,6 +2,10 @@
 #include "CodalJacdac.h"
 #include "ZSingleWireSerial.h"
 
+#if defined(NRF52833_XXAA)
+#define IS_MICROBIT 1
+#endif
+
 namespace jdc {
 
 void bridge_init();
@@ -30,3 +34,10 @@ void start() {
 }
 
 } // namespace jdc
+
+extern "C" void init_local_services(void) {
+#ifdef IS_MICROBIT
+    button_init(14, 0, NO_PIN);
+    button_init(23, 0, NO_PIN);
+#endif
+}

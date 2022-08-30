@@ -3,6 +3,8 @@
 extern "C" {
 #include "jd_client.h"
 #include "jacscript.h"
+#include "jd_drivers.h"
+#include "services/jd_services.h"
 }
 
 #include "codal_target_hal.h"
