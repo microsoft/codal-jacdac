@@ -1,7 +1,6 @@
-#include "pxt.h"
-#include "jdlow.h"
+#include "CodalJacdac.h"
 
-#include "ZSingleWireSerial.h"
+using namespace codal;
 
 //#define ENABLE_PIN_LOG 1
 
@@ -10,7 +9,7 @@
 #define LOG(msg, ...) DMESG("JD: " msg, ##__VA_ARGS__)
 //#define LOG(...) ((void)0)
 
-static ZSingleWireSerial *sws;
+static DMASingleWireSerial *sws;
 static cb_t tim_cb;
 static volatile uint8_t status;
 static uint16_t currEvent;
@@ -99,6 +98,7 @@ static void pin_pulse() {
 
 void jd_panic(void) {
     target_panic(PANIC_JACDAC);
+    while (1);
 }
 
 REAL_TIME_FUNC
@@ -118,7 +118,7 @@ void tim_init() {
 
 REAL_TIME_FUNC
 uint64_t tim_get_micros(void) {
-    return current_time_us();
+    return system_timer_current_time_us();
 }
 
 // timer overhead measurements (without any delta compensation)
@@ -220,18 +220,6 @@ static void sws_done(uint16_t errCode) {
 }
 
 void uart_init_() {
-    // allow disabling SWS with the following anywhere in the TS code:
-    // namespace userconfig { export const PIN_JACK_TX = 0xdead }
-    if (getConfig(CFG_PIN_JACK_TX, 0) == 0xdead) {
-        DMESG("Jacdac SWS disabled");
-        return;
-    }
-
-#ifdef MICROBIT_CODAL
-    sws = new ZSingleWireSerial(uBit.io.P12);
-#else
-    sws = new ZSingleWireSerial(*LOOKUP_PIN(JACK_TX));
-#endif
     sws->setBaud(1000000);
 
     sws->p.setIRQ(line_falling);
@@ -312,4 +300,13 @@ int uart_wait_high() {
     if (timeout <= 0)
         return -1;
     return 0;
+}
+
+void jdhw_init(DMASingleWireSerial *dmasws) {
+    sws = dmasws;
+
+    DMESG("JD: init");
+    tim_init();
+    // set_tick_timer(0);
+    uart_init_();
 }
