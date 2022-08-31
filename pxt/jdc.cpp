@@ -6,9 +6,6 @@ namespace jdc {
 
 void bridge_init();
 
-/**
- * Start jacdac-c stack
- */
 //%
 void start() {
     // allow disabling SWS with the following anywhere in the TS code:
@@ -27,6 +24,11 @@ void start() {
 
     jdhw_init(sws);
     bridge_init();
+}
+
+//%
+int deploy(Buffer jacsprog) {
+    return jacscriptmgr_deploy(jacsprog->data, jacsprog->length);
 }
 
 } // namespace jdc
