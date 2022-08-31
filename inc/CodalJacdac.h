@@ -5,6 +5,7 @@ extern "C" {
 #include "jacscript.h"
 #include "jd_drivers.h"
 #include "services/jd_services.h"
+#include "services/interfaces/jd_disp.h"
 }
 
 #include "codal_target_hal.h"

@@ -31,6 +31,7 @@ list(APPEND SOURCE_FILES
     "jacdac-c/services/power.c"
     "jacdac-c/services/button.c"
     "jacdac-c/services/temperature.c"
+    "jacdac-c/services/dotmatrix.c"
     "jacdac-c/services/accelerometer.c"
     "jacdac-c/services/jd_sensor.c"
     "jacdac-c/services/jd_env.c"
