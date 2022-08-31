@@ -113,14 +113,17 @@ void disp_set_brigthness(uint16_t v) {
     disp_refresh();
 }
 
+extern "C" void bitradio_init(void);
+
 #endif
 
 extern "C" void init_local_services(void) {
 #ifdef IS_MICROBIT
     button_init(BUTTONA, 0, NO_PIN);
+    dotmatrix_init();
     button_init(BUTTONB, 0, NO_PIN);
     temperature_init(&mb_thermometer);
+    bitradio_init();
     accelerometer_init(&mb_accel);
-    dotmatrix_init();
 #endif
 }
