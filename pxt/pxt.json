@@ -13,6 +13,7 @@
         "jdc.cpp",
         "flash.cpp",
         "mbbridge.cpp",
+        "microbit.cpp",
         "shims.d.ts",
         "jdc.ts"
     ],
