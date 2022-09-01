@@ -115,10 +115,41 @@ void disp_set_brigthness(uint16_t v) {
 
 extern "C" void bitradio_init(void);
 
+static NRF52Serial *serial_;
+void platformSendSerial(const char *data, int len) {
+    if (!serial_)
+        serial_ = new NRF52Serial(*PIN(USB_UART_TX), *PIN(USB_UART_RX), NRF_UARTE0);
+    serial_->send((uint8_t *)data, len);
+}
+
+void flush_dmesg(Event) {
+#if DEVICE_DMESG_BUFFER_SIZE > 0
+    int p = codalLogStore.ptr;
+    if (p > 0) {
+        platformSendSerial(codalLogStore.buffer, p);
+
+        target_disable_irq();
+        int newp = codalLogStore.ptr - p;
+        if (newp < 0)
+            newp = 0;
+        if (newp)
+            memmove(codalLogStore.buffer, codalLogStore.buffer + p, newp);
+        codalLogStore.ptr = newp;
+        target_enable_irq();
+    }
+#endif
+}
+
 #endif
 
 extern "C" void init_local_services(void) {
 #ifdef IS_MICROBIT
+#define DEVICE_ID_CYCLE DEVICE_ID_JACDAC_CONTROL_SERVICE
+    pxt::setSendToUART(platformSendSerial);
+    EventModel::defaultEventBus->listen(DEVICE_ID_CYCLE, 2, flush_dmesg,
+                                        MESSAGE_BUS_LISTENER_DROP_IF_BUSY);
+    system_timer_event_every_us(100000, DEVICE_ID_CYCLE, 2);
+
     button_init(BUTTONA, 0, NO_PIN);
     dotmatrix_init();
     button_init(BUTTONB, 0, NO_PIN);

@@ -6,8 +6,13 @@ namespace jdc {
 
 void bridge_init();
 
+static ZSingleWireSerial *sws;
+
 //%
 void start() {
+    if (sws)
+        return;
+
     // allow disabling SWS with the following anywhere in the TS code:
     // namespace userconfig { export const PIN_JACK_TX = 0xdead }
     if (getConfig(CFG_PIN_JACK_TX, 0) == 0xdead) {
@@ -15,7 +20,6 @@ void start() {
         return;
     }
 
-    ZSingleWireSerial *sws;
 #ifdef MICROBIT_CODAL
     sws = new ZSingleWireSerial(uBit.io.P12);
 #else
