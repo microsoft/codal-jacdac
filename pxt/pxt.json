@@ -4,9 +4,9 @@
         "device": "file:../../libs/device"
     },
     "codal": {
-      "libraries": [
-        "https://github.com/microsoft/codal-jacdac#main"
-      ]
+        "libraries": [
+            "https://github.com/microsoft/codal-jacdac#main"
+        ]
     },
     "description": "",
     "files": [
@@ -17,5 +17,6 @@
         "microbitradio.cpp",
         "jdc.ts"
     ],
-    "preferredEditor": "tsprj"
+    "preferredEditor": "tsprj",
+    "version": "0.0.1"
 }
