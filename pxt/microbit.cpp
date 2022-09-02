@@ -146,9 +146,9 @@ extern "C" void init_local_services(void) {
 #ifdef IS_MICROBIT
 #define DEVICE_ID_CYCLE DEVICE_ID_JACDAC_CONTROL_SERVICE
     pxt::setSendToUART(platformSendSerial);
-    EventModel::defaultEventBus->listen(DEVICE_ID_CYCLE, 2, flush_dmesg,
+    EventModel::defaultEventBus->listen(DEVICE_ID_CYCLE, 200, flush_dmesg,
                                         MESSAGE_BUS_LISTENER_DROP_IF_BUSY);
-    system_timer_event_every_us(100000, DEVICE_ID_CYCLE, 2);
+    system_timer_event_every_us(100000, DEVICE_ID_CYCLE, 200);
 
     button_init(BUTTONA, 0, NO_PIN);
     dotmatrix_init();

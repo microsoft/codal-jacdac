@@ -112,9 +112,25 @@ static void tim_callback(Event e) {
     }
 }
 
+static uint8_t work_queued;
 REAL_TIME_FUNC
 static void work_callback(Event e) {
+    work_queued = 0;
     jd_process_everything();
+}
+
+REAL_TIME_FUNC
+static void queue_work_callback(Event e) {
+    if (work_queued && work_queued++ > 20) {
+        // fallback
+        DMESG("lost some work events!");
+        work_queued = 0;
+    }
+
+    if (work_queued == 0) {
+        work_queued = 1;
+        Event(DEVICE_ID_CYCLE, 2);
+    }
 }
 
 void tim_init() {
@@ -319,7 +335,9 @@ void jdhw_init(DMASingleWireSerial *dmasws) {
 
     jd_init();
 
-    EventModel::defaultEventBus->listen(DEVICE_ID_CYCLE, 1, work_callback,
+    EventModel::defaultEventBus->listen(DEVICE_ID_CYCLE, 1, queue_work_callback,
+                                        MESSAGE_BUS_LISTENER_IMMEDIATE);
+    EventModel::defaultEventBus->listen(DEVICE_ID_CYCLE, 2, work_callback,
                                         MESSAGE_BUS_LISTENER_DROP_IF_BUSY);
     system_timer_event_every_us(10000, DEVICE_ID_CYCLE, 1);
 }
