@@ -12,6 +12,8 @@ namespace jdc {
      */
     //% shim=jdc::deploy
     export function deploy(jacsprog: Buffer): number {
-        return 0 // nothing yet
+        control.simmessages.send("jacscript", jacsprog)
+        // report errors via events?
+        return 0
     }
 }
