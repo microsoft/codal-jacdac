@@ -86,7 +86,6 @@ extern "C" uint32_t __StackTop;
 
 void bridge_init() {
     // microbit_panic_timeout(0);
-
     buff = (ExchangeBuffer *)app_alloc(sizeof(*buff));
     memset(buff, 0, sizeof(*buff));
     buff->irqn = TEMP_IRQn;
@@ -101,6 +100,8 @@ void bridge_init() {
     // store the address to the top of the exchange buffer at the very bottom of the stack (which is
     // otherwise unused)
     (&__StackTop)[-1] = (uint32_t)buff;
+
+    DMESG("started m:b bridge: %p", buff);
 }
 
 } // namespace jdc

@@ -13,6 +13,7 @@
 #include "MicroBitAccelerometer.h"
 #include "MicroBitI2C.h"
 #include "MicroBitDisplay.h"
+#include "NRF52TouchSensor.h"
 
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 
@@ -140,6 +141,13 @@ void flush_dmesg(Event) {
 #endif
 }
 
+static int read_button(void *btn) {
+    return ((TouchButton *)btn)->isPressed();
+}
+void add_touch_button(NRF52TouchSensor *touchSensor, int pinid) {
+    button_init_fn(read_button, new TouchButton(*PIN(pinid), *touchSensor, 3500));
+}
+
 #endif
 
 extern "C" void init_local_services(void) {
@@ -156,5 +164,13 @@ extern "C" void init_local_services(void) {
     temperature_init(&mb_thermometer);
     bitradio_init();
     accelerometer_init(&mb_accel);
+
+    auto capTimer = new NRFLowLevelTimer(NRF_TIMER3, TIMER3_IRQn);
+    auto touchSensor = new NRF52TouchSensor(*capTimer);
+
+    add_touch_button(touchSensor, P1_04); // logo
+    add_touch_button(touchSensor, 2);     // P0
+    add_touch_button(touchSensor, 3);     // P1
+    add_touch_button(touchSensor, 4);     // P2
 #endif
 }
