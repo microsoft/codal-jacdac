@@ -35,3 +35,5 @@ int mbbridge_send_frame(void *frame);
 
 #define NUM_DISPLAY_COLS 5
 #define NUM_DISPLAY_ROWS 5
+
+#define JD_INSTANCE_NAME 1

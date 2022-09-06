@@ -148,6 +148,24 @@ void add_touch_button(NRF52TouchSensor *touchSensor, int pinid) {
     button_init_fn(read_button, new TouchButton(*PIN(pinid), *touchSensor, 3500));
 }
 
+extern "C" const char *app_get_instance_name(int service_idx) {
+    switch (service_idx - 2) {
+    case 1:
+        return "A";
+    case 3:
+        return "B";
+    case 7:
+        return "logo";
+    case 8:
+        return "P0";
+    case 9:
+        return "P1";
+    case 10:
+        return "P2";
+    }
+    return NULL;
+}
+
 #endif
 
 extern "C" void init_local_services(void) {
