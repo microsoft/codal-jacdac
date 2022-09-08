@@ -17,6 +17,7 @@
         "mbbridge.cpp",
         "microbit.cpp",
         "microbitradio.cpp",
+        "microbitsoundlevel.cpp",
         "jdc.ts"
     ],
     "preferredEditor": "tsprj"

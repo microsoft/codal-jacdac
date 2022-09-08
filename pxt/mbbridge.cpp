@@ -73,7 +73,6 @@ static void logq_poke() {
         if (crc != frame->crc) {
             JD_LOG("USB crc err");
         } else {
-            DMESG("sx %d", declaredSize);
             jd_send_frame_raw(frame);
         }
         buff->sendBuf[2] = 0;

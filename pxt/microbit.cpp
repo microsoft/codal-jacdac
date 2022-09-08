@@ -1,8 +1,5 @@
 #include "jdc.h"
 
-#undef PIN
-#define PIN pxt::getPin
-
 #ifdef IS_MICROBIT
 #include "MicroBitThermometer.h"
 #include "MicroBitAccelerometer.h"
@@ -84,6 +81,13 @@ static void disp_init() {
         ledColPins[i] = PIN(col_pins[i]);
     }
 
+    // Bring up our display pins as high drive.
+    for (NRF52Pin *p : ledRowPins)
+        p->setHighDrive(true);
+
+    for (NRF52Pin *p : ledColPins)
+        p->setHighDrive(true);
+
     static MatrixMap ledMatrixMap = {
         5, 5, 5, 5, (Pin **)ledRowPins, (Pin **)ledColPins, ledMatrixPositions};
 
@@ -139,8 +143,8 @@ void flush_dmesg(Event) {
 static int read_button(void *btn) {
     return ((TouchButton *)btn)->isPressed();
 }
-void add_touch_button(NRF52TouchSensor *touchSensor, int pinid) {
-    button_init_fn(read_button, new TouchButton(*PIN(pinid), *touchSensor, 3500));
+void add_touch_button(int pinid) {
+    button_init_fn(read_button, new TouchButton(*PIN(pinid), *NRF52Pin::touchSensor, 3500));
 }
 
 extern "C" const char *app_get_instance_name(int service_idx) {
@@ -161,6 +165,9 @@ extern "C" const char *app_get_instance_name(int service_idx) {
     return NULL;
 }
 
+extern "C" void soundlevel_init(void);
+extern "C" void bitradio_init(void);
+
 #endif
 
 extern "C" void init_local_services(void) {
@@ -171,6 +178,11 @@ extern "C" void init_local_services(void) {
                                         MESSAGE_BUS_LISTENER_DROP_IF_BUSY);
     system_timer_event_every_us(100000, DEVICE_ID_CYCLE, 200);
 
+    auto irq1 = PIN(25);
+    irq1->getDigitalValue();
+    irq1->setPull(PullMode::Up);
+    irq1->setActiveLo();
+
     button_init(BUTTONA, 0, NO_PIN);
     dotmatrix_init();
     button_init(BUTTONB, 0, NO_PIN);
@@ -179,11 +191,30 @@ extern "C" void init_local_services(void) {
     accelerometer_init(&mb_accel);
 
     auto capTimer = new NRFLowLevelTimer(NRF_TIMER3, TIMER3_IRQn);
-    auto touchSensor = new NRF52TouchSensor(*capTimer);
+    NRF52Pin::touchSensor = new NRF52TouchSensor(*capTimer);
 
-    add_touch_button(touchSensor, P1_04); // logo
-    add_touch_button(touchSensor, 2);     // P0
-    add_touch_button(touchSensor, 3);     // P1
-    add_touch_button(touchSensor, 4);     // P2
+    auto adcTimer = new NRFLowLevelTimer(NRF_TIMER2, TIMER2_IRQn);
+    NRF52Pin::adc = new NRF52ADC(*adcTimer, 91);
+
+    add_touch_button(P1_04); // logo
+    add_touch_button(2);     // P0
+    add_touch_button(3);     // P1
+    add_touch_button(4);     // P2
+
+    bitradio_init();
+    soundlevel_init();
+
+    NVIC_SetPriority(TIMER1_IRQn, 7);       // System timer (general purpose)
+    NVIC_SetPriority(TIMER2_IRQn, 5);       // ADC timer.
+    NVIC_SetPriority(TIMER3_IRQn, 3);       // Cap touch.
+    NVIC_SetPriority(TIMER4_IRQn, 3);       // Display and Light Sensing.
+    NVIC_SetPriority(SAADC_IRQn, 5);        // Analogue to Digital Converter (microphone etc)
+    NVIC_SetPriority(PWM0_IRQn, 5);         // General Purpose PWM on edge connector
+    NVIC_SetPriority(PWM1_IRQn, 4);         // PCM audio on speaker (high definition sound)
+    NVIC_SetPriority(PWM2_IRQn, 3);         // Waveform Generation (neopixel)
+    NVIC_SetPriority(RADIO_IRQn, 4);        // Packet radio
+    NVIC_SetPriority(UARTE0_UART0_IRQn, 2); // Serial port
+    NVIC_SetPriority(GPIOTE_IRQn, 2);       // Pin interrupt events
+
 #endif
 }
