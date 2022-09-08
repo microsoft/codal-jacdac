@@ -1,5 +1,4 @@
-#include "pxt.h"
-#include "CodalJacdac.h"
+#include "jdc.h"
 #include "ZSingleWireSerial.h"
 
 namespace jdc {
@@ -33,6 +32,21 @@ void start() {
 //%
 int deploy(Buffer jacsprog) {
     return jacscriptmgr_deploy(jacsprog->data, jacsprog->length);
+}
+
+//%
+int numServiceInstances(int serviceClass) {
+    int cnt = 0;
+    for (jd_device_t *p = jd_devices; p; p = p->next) {
+        if (serviceClass == 0)
+            cnt++;
+        else
+            for (int i = 1; i < p->num_services; ++i) {
+                if (p->services[i].service_class == (unsigned)serviceClass)
+                    cnt++;
+            }
+    }
+    return cnt;
 }
 
 } // namespace jdc

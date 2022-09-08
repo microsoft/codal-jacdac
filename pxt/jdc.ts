@@ -16,4 +16,12 @@ namespace jdc {
         // report errors via events?
         return 0
     }
+
+    /**
+     * Return number of service instances of given class currently on the bus.
+     */
+    //% shim=jdc::numServiceInstances
+    export function numServiceInstances(serviceClass: number): number {
+        return 0
+    }
 }
