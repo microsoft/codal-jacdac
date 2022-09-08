@@ -11,6 +11,7 @@
     },
     "description": "",
     "files": [
+        "jdc.h",
         "jdc.cpp",
         "flash.cpp",
         "mbbridge.cpp",

@@ -1,5 +1,4 @@
-#include "pxt.h"
-#include "CodalJacdac.h"
+#include "jdc.h"
 
 #ifdef NRF52_SERIES
 
