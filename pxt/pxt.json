@@ -2,7 +2,6 @@
     "name": "codal-jacdac",
     "version": "0.0.5",
     "dependencies": {
-        "mixer---none": "file:../../libs/mixer---none",
         "device": "file:../../libs/device"
     },
     "codal": {
@@ -15,6 +14,7 @@
         "jdc.h",
         "jdc.cpp",
         "flash.cpp",
+        "cbuzzer.cpp",
         "mbbridge.cpp",
         "microbit.cpp",
         "microbitradio.cpp",

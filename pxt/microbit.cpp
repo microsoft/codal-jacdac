@@ -211,6 +211,7 @@ extern "C" void init_local_services(void) {
     audio->setPinEnabled(false);
 
     soundplayer_init(audio);
+    cbuzzer_init(&audio->virtualOutputPin);
 
     NVIC_SetPriority(TIMER1_IRQn, 7);       // System timer (general purpose)
     NVIC_SetPriority(TIMER2_IRQn, 5);       // ADC timer.

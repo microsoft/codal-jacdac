@@ -28,6 +28,7 @@ static const char *sounds[] = {
 static void soundplayer_sync_regs(srv_t *state) {
     state->audio->setVolume(state->volume >> 8);
 }
+
 void soundplayer_process(srv_t *state) {
     while (state->soundptr < NUM_SOUNDS) {
         unsigned sz = 4 + strlen(sounds[state->soundptr]);

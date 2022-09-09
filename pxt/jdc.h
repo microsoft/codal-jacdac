@@ -6,3 +6,5 @@
 #endif
 
 #define GETPIN pxt::getPin
+
+extern "C" void cbuzzer_init(Pin *pin);
