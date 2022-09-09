@@ -112,25 +112,29 @@ static void tim_callback(Event e) {
     }
 }
 
-static uint8_t work_queued;
+static uint32_t time_queued;
+
 REAL_TIME_FUNC
 static void work_callback(Event e) {
-    work_queued = 0;
+    time_queued = 0;
     jd_process_everything();
 }
 
 REAL_TIME_FUNC
 static void queue_work_callback(Event e) {
-    if (work_queued && work_queued++ > 20) {
-        // fallback
-        DMESG("lost some work events!");
-        work_queued = 0;
+    uint32_t n = system_timer_current_time_us();
+    if (time_queued != 0) {
+        if (n - time_queued > (128 << 10)) {
+            // fallback
+            DMESG("lost some work events!");
+        } else {
+            // just skip it
+            return;
+        }
     }
 
-    if (work_queued == 0) {
-        work_queued = 1;
-        Event(DEVICE_ID_CYCLE, 2);
-    }
+    time_queued = n;
+    Event(DEVICE_ID_CYCLE, 2);
 }
 
 void tim_init() {
@@ -323,6 +327,10 @@ int uart_wait_high() {
     if (timeout <= 0)
         return -1;
     return 0;
+}
+
+extern "C" void jdhw_poke(void) {
+    Event(DEVICE_ID_CYCLE, 1);
 }
 
 void jdhw_init(DMASingleWireSerial *dmasws) {

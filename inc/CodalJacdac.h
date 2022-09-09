@@ -13,6 +13,7 @@ extern "C" {
 #include "MessageBus.h"
 #include "Timer.h"
 #include "CodalDmesg.h"
+#include "CodalFiber.h"
 
 #define PANIC_JACDAC 777
 

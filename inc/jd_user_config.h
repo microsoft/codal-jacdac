@@ -39,3 +39,6 @@ int mbbridge_send_frame(void *frame);
 #define JD_INSTANCE_NAME 1
 
 #define JD_RX_QUEUE_SIZE 1024
+
+void jdhw_poke(void);
+#define JD_WAKE_MAIN() jdhw_poke()

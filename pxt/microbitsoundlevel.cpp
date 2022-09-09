@@ -25,7 +25,6 @@ static void soundlevel_sync_regs(srv_t *state) {
     }
 
     if (!state->level) {
-        DMESG("SL enable");
         state->channel = NRF52Pin::adc->getChannel(*GETPIN(state->pin_mic));
         auto norm =
             new StreamNormalizer(state->channel->output, 1.0f, true, DATASTREAM_FORMAT_UNKNOWN, 10);
