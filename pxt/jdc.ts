@@ -1,5 +1,5 @@
 namespace userconfig {
-    // export const SYSTEM_HEAP_BYTES = 10000
+    export const SYSTEM_HEAP_BYTES = 10000
 }
 
 namespace jdc {
