@@ -6,13 +6,14 @@
 #include "MicroBitI2C.h"
 #include "MicroBitDisplay.h"
 #include "NRF52TouchSensor.h"
+#include "MicroBitAudio.h"
 
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 
 static MicroBitI2C *get_i2c(void) {
     static MicroBitI2C *i2c;
     if (!i2c)
-        i2c = new MicroBitI2C(*PIN(MICROBIT_PIN_INT_SDA), *PIN(MICROBIT_PIN_INT_SCL));
+        i2c = new MicroBitI2C(*GETPIN(MICROBIT_PIN_INT_SDA), *GETPIN(MICROBIT_PIN_INT_SCL));
     return i2c;
 }
 
@@ -77,8 +78,8 @@ static void disp_init() {
     static NRF52Pin *ledColPins[5];
 
     for (int i = 0; i < 5; ++i) {
-        ledRowPins[i] = PIN(row_pins[i]);
-        ledColPins[i] = PIN(col_pins[i]);
+        ledRowPins[i] = GETPIN(row_pins[i]);
+        ledColPins[i] = GETPIN(col_pins[i]);
     }
 
     // Bring up our display pins as high drive.
@@ -118,7 +119,7 @@ extern "C" void bitradio_init(void);
 static NRF52Serial *serial_;
 void platformSendSerial(const char *data, int len) {
     if (!serial_)
-        serial_ = new NRF52Serial(*PIN(USB_UART_TX), *PIN(USB_UART_RX), NRF_UARTE0);
+        serial_ = new NRF52Serial(*GETPIN(USB_UART_TX), *GETPIN(USB_UART_RX), NRF_UARTE0);
     serial_->send((uint8_t *)data, len);
 }
 
@@ -144,7 +145,7 @@ static int read_button(void *btn) {
     return ((TouchButton *)btn)->isPressed();
 }
 void add_touch_button(int pinid) {
-    button_init_fn(read_button, new TouchButton(*PIN(pinid), *NRF52Pin::touchSensor, 3500));
+    button_init_fn(read_button, new TouchButton(*GETPIN(pinid), *NRF52Pin::touchSensor, 3500));
 }
 
 extern "C" const char *app_get_instance_name(int service_idx) {
@@ -167,6 +168,7 @@ extern "C" const char *app_get_instance_name(int service_idx) {
 
 extern "C" void soundlevel_init(void);
 extern "C" void bitradio_init(void);
+extern "C" void soundplayer_init(MicroBitAudio *audio);
 
 #endif
 
@@ -178,7 +180,7 @@ extern "C" void init_local_services(void) {
                                         MESSAGE_BUS_LISTENER_DROP_IF_BUSY);
     system_timer_event_every_us(100000, DEVICE_ID_CYCLE, 200);
 
-    auto irq1 = PIN(25);
+    auto irq1 = GETPIN(25);
     irq1->getDigitalValue();
     irq1->setPull(PullMode::Up);
     irq1->setActiveLo();
@@ -203,6 +205,12 @@ extern "C" void init_local_services(void) {
 
     bitradio_init();
     soundlevel_init();
+
+    auto audio = new MicroBitAudio(*GETPIN(2), *GETPIN(0));
+    audio->setSpeakerEnabled(true);
+    audio->setPinEnabled(false);
+
+    soundplayer_init(audio);
 
     NVIC_SetPriority(TIMER1_IRQn, 7);       // System timer (general purpose)
     NVIC_SetPriority(TIMER2_IRQn, 5);       // ADC timer.

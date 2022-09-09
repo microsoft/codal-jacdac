@@ -5,5 +5,4 @@
 #define IS_MICROBIT 1
 #endif
 
-#undef PIN
-#define PIN pxt::getPin
+#define GETPIN pxt::getPin

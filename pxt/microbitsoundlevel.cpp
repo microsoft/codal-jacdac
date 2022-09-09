@@ -26,7 +26,7 @@ static void soundlevel_sync_regs(srv_t *state) {
 
     if (!state->level) {
         DMESG("SL enable");
-        state->channel = NRF52Pin::adc->getChannel(*PIN(state->pin_mic));
+        state->channel = NRF52Pin::adc->getChannel(*GETPIN(state->pin_mic));
         auto norm =
             new StreamNormalizer(state->channel->output, 1.0f, true, DATASTREAM_FORMAT_UNKNOWN, 10);
         state->level = new LevelDetectorSPL(norm->output, 75.0, 60.0, 9, 52, DEVICE_ID_MICROPHONE);
@@ -69,7 +69,7 @@ extern "C" void soundlevel_init(void) {
     state->pin_mic = 5;
 
     pin_set(state->pin_runmic, 0);
-    PIN(state->pin_runmic)->setHighDrive(true);
+    GETPIN(state->pin_runmic)->setHighDrive(true);
 }
 
 #endif
