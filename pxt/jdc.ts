@@ -1,3 +1,7 @@
+namespace userconfig {
+    // export const SYSTEM_HEAP_BYTES = 10000
+}
+
 namespace jdc {
     /**
      * Start jacdac-c stack
