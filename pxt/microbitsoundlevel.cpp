@@ -9,12 +9,23 @@
 
 struct srv_state {
     SENSOR_COMMON;
+    uint16_t laud_threshold;
+    uint16_t quiet_threshold;
     uint8_t pin_runmic;
     uint8_t pin_mic;
     uint16_t sample;
+    uint32_t block_laud;
+    uint32_t block_quiet;
     NRF52ADCChannel *channel;
     LevelDetectorSPL *level;
 };
+
+REG_DEFINITION(                                  //
+    soundlevel_regs,                             //
+    REG_SENSOR_COMMON,                           //
+    REG_U16(JD_SOUND_LEVEL_REG_LOUD_THRESHOLD),  //
+    REG_U16(JD_SOUND_LEVEL_REG_QUIET_THRESHOLD), //
+)
 
 static void soundlevel_sync_regs(srv_t *state) {
     if (!state->got_query) {
@@ -48,6 +59,14 @@ void soundlevel_process(srv_t *state) {
         if (v > 0xffff)
             v = 0xffff;
         state->sample = (uint16_t)v;
+
+        if (sensor_should_send_threshold_event(&state->block_laud, 50,
+                                               state->sample >= state->laud_threshold))
+            jd_send_event(state, JD_SOUND_LEVEL_EV_LOUD);
+
+        if (sensor_should_send_threshold_event(&state->block_quiet, 50,
+                                               state->sample <= state->quiet_threshold))
+            jd_send_event(state, JD_SOUND_LEVEL_EV_QUIET);
     } else {
         state->sample = 0;
     }
@@ -56,6 +75,9 @@ void soundlevel_process(srv_t *state) {
 }
 
 void soundlevel_handle_packet(srv_t *state, jd_packet_t *pkt) {
+    if (service_handle_register(state, pkt, soundlevel_regs))
+        return;
+
     if (sensor_handle_packet_simple(state, pkt, &state->sample, sizeof(state->sample)))
         soundlevel_sync_regs(state);
 }
@@ -66,6 +88,8 @@ extern "C" void soundlevel_init(void) {
 
     state->pin_runmic = 20;
     state->pin_mic = 5;
+    state->quiet_threshold = 0x1e1e; // 60
+    state->laud_threshold = 0x5696;  // 75
 
     pin_set(state->pin_runmic, 0);
     GETPIN(state->pin_runmic)->setHighDrive(true);

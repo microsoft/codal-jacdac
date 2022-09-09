@@ -25,8 +25,8 @@ static void play_tone(srv_t *state, uint32_t period, uint32_t duty) {
     int v = (1024 * duty) / period;
     if (v < 0)
         v = 0;
-    if (v > 512)
-        v = 512;
+    if (v > 1023)
+        v = 1023;
     state->pin->setAnalogValue(v);
 }
 
