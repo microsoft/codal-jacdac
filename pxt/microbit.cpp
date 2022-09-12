@@ -152,15 +152,15 @@ extern "C" const char *app_get_instance_name(int service_idx) {
     switch (service_idx - 2) {
     case 1:
         return "A";
-    case 3:
+    case 2:
         return "B";
-    case 7:
+    case 3:
         return "logo";
-    case 8:
+    case 4:
         return "P0";
-    case 9:
+    case 5:
         return "P1";
-    case 10:
+    case 6:
         return "P2";
     }
     return NULL;
@@ -185,31 +185,30 @@ extern "C" void init_local_services(void) {
     irq1->setPull(PullMode::Up);
     irq1->setActiveLo();
 
-    button_init(BUTTONA, 0, NO_PIN);
-    dotmatrix_init();
-    button_init(BUTTONB, 0, NO_PIN);
-    temperature_init(&mb_thermometer);
-    bitradio_init();
-    accelerometer_init(&mb_accel);
-
     auto capTimer = new NRFLowLevelTimer(NRF_TIMER3, TIMER3_IRQn);
     NRF52Pin::touchSensor = new NRF52TouchSensor(*capTimer);
 
     auto adcTimer = new NRFLowLevelTimer(NRF_TIMER2, TIMER2_IRQn);
     NRF52Pin::adc = new NRF52ADC(*adcTimer, 91);
 
+    auto audio = new MicroBitAudio(*GETPIN(2), *GETPIN(0));
+    audio->setSpeakerEnabled(true);
+    audio->setPinEnabled(false);
+
+    button_init(BUTTONA, 0, NO_PIN);
+    button_init(BUTTONB, 0, NO_PIN);
     add_touch_button(P1_04); // logo
     add_touch_button(2);     // P0
     add_touch_button(3);     // P1
     add_touch_button(4);     // P2
 
-    bitradio_init();
+    temperature_init(&mb_thermometer);
+    accelerometer_init(&mb_accel);
     soundlevel_init();
 
-    auto audio = new MicroBitAudio(*GETPIN(2), *GETPIN(0));
-    audio->setSpeakerEnabled(true);
-    audio->setPinEnabled(false);
-
+    bitradio_init();
+    
+    dotmatrix_init();
     soundplayer_init(audio);
     cbuzzer_init(&audio->virtualOutputPin);
 
