@@ -4,6 +4,27 @@ namespace userconfig {
 
 namespace jdc {
     /**
+     * Set Jacdac parameters.
+     */
+    //% shim=jdc::setParameters
+    export function setParameters(
+        dev_class: number,
+        fw_version: string,
+        dev_name: string
+    ) {
+        const info = {
+            dev_class,
+            dev_name,
+            fw_version,
+        }
+        control.simmessages.send(
+            "jacdacSettings",
+            Buffer.fromUTF8(JSON.stringify(info))
+        )
+        return
+    }
+
+    /**
      * Start jacdac-c stack
      */
     //% shim=jdc::start

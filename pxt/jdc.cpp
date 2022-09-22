@@ -3,9 +3,36 @@
 
 namespace jdc {
 
+static uint32_t dev_class = 0x3126744e;
+static char *dev_class_name;
+static char *fw_version;
+
+extern "C" {
+const char *app_get_fw_version(void) {
+    return fw_version ? fw_version : "v0.0.0";
+}
+
+const char *app_get_dev_class_name(void) {
+    return dev_class_name ? dev_class_name : "codal-jacdac device";
+}
+
+uint32_t app_get_device_class(void) {
+    return dev_class;
+}
+}
+
 void bridge_init();
 
 static ZSingleWireSerial *sws;
+
+//%
+void setParameters(uint32_t cls, String ver, String name) {
+    dev_class = cls;
+    jd_free(dev_class_name);
+    dev_class_name = jd_strdup(name->getUTF8Data());
+    jd_free(fw_version);
+    fw_version = jd_strdup(ver->getUTF8Data());
+}
 
 //%
 void start() {
