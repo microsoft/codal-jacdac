@@ -1,12 +1,12 @@
 {
     "name": "codal-jacdac",
-    "version": "0.0.9",
+    "version": "0.0.10",
     "dependencies": {
         "device": "file:../../libs/device"
     },
     "codal": {
         "libraries": [
-            "https://github.com/microsoft/codal-jacdac#v0.0.9"
+            "https://github.com/microsoft/codal-jacdac#v0.0.10"
         ]
     },
     "description": "",
