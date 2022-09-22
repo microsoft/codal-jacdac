@@ -128,6 +128,7 @@ void bitradio_handle_packet(srv_t *state, jd_packet_t *pkt) {
 SRV_DEF(bitradio, JD_SERVICE_CLASS_BIT_RADIO);
 extern "C" void bitradio_init(void) {
     SRV_ALLOC(bitradio);
+    state->group = 1;
     state->tx_power = 6;
     state->freq_band = 7;
 }
