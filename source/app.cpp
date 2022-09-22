@@ -18,5 +18,7 @@ void app_init_services() {
     jd_role_manager_init();
     init_jacscript_manager();
     init_local_services();
+
+    // tsagg_init(&noop_cloud);
 }
 }

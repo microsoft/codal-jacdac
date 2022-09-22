@@ -7,6 +7,7 @@
 #include "MicroBitDisplay.h"
 #include "NRF52TouchSensor.h"
 #include "MicroBitAudio.h"
+#include "MicroBitDevice.h"
 
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 
@@ -141,6 +142,18 @@ void flush_dmesg(Event) {
 #endif
 }
 
+extern "C" void platform_panic(int error_code) {
+    target_disable_irq();
+    DMESG("JD PANIC %d", error_code);
+    int p = codalLogStore.ptr;
+    if (serial_ && p > 0) {
+        nrf_uarte_tx_buffer_set(NRF_UARTE0, (uint8_t *)codalLogStore.buffer, p);
+        nrf_uarte_task_trigger(NRF_UARTE0, NRF_UARTE_TASK_STARTTX);
+        target_wait_us(p * 100);
+    }
+    codal::microbit_panic(error_code);
+}
+
 static int read_button(void *btn) {
     return ((TouchButton *)btn)->isPressed();
 }
@@ -207,7 +220,7 @@ extern "C" void init_local_services(void) {
     soundlevel_init();
 
     bitradio_init();
-    
+
     dotmatrix_init();
     soundplayer_init(audio);
     cbuzzer_init(&audio->virtualOutputPin);
