@@ -182,6 +182,13 @@ extern "C" const char *app_get_instance_name(int service_idx) {
 extern "C" void soundlevel_init(void);
 extern "C" void bitradio_init(void);
 extern "C" void soundplayer_init(MicroBitAudio *audio);
+extern "C" void lightlevel_init(uint16_t (*read_value)(void));
+
+static uint16_t getLightLevel(void) {
+    disp_init();
+    int q = display->readLightLevel();
+    return q << 8;
+}
 
 #endif
 
@@ -224,6 +231,7 @@ extern "C" void init_local_services(void) {
     dotmatrix_init();
     soundplayer_init(audio);
     cbuzzer_init(&audio->virtualOutputPin);
+    // lightlevel_init(getLightLevel);
 
     NVIC_SetPriority(TIMER1_IRQn, 7);       // System timer (general purpose)
     NVIC_SetPriority(TIMER2_IRQn, 5);       // ADC timer.

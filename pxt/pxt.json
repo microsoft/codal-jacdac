@@ -15,6 +15,7 @@
         "jdc.cpp",
         "flash.cpp",
         "cbuzzer.cpp",
+        "lightlevel.cpp",
         "mbbridge.cpp",
         "microbit.cpp",
         "microbitradio.cpp",
