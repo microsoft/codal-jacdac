@@ -24,12 +24,30 @@ namespace jdc {
         return
     }
 
+    interface JacdacState {
+        selfId: string
+        devices: {
+            deviceId: string
+            services: { name: string;
+                serviceClass: number }[]
+        }[]
+    }
+
+    let _jacdacStateBuffer: Buffer
+    function jacdacState(): JacdacState {
+        if (!_jacdacStateBuffer) return { selfId: "", devices: [] } as JacdacState
+        const state = JSON.parse(_jacdacStateBuffer.toString()) as JacdacState
+        return state
+    }
+
     /**
      * Start jacdac-c stack
      */
     //% shim=jdc::start
     export function start(): void {
-        return // do nothin' in sim
+        control.simmessages.onReceived("jacdacState", (buf: Buffer) => {
+            _jacdacStateBuffer = buf
+        })
     }
 
     /**
@@ -38,7 +56,6 @@ namespace jdc {
     //% shim=jdc::deploy
     export function deploy(jacsprog: Buffer): number {
         control.simmessages.send("jacscript", jacsprog)
-        // report errors via events?
         return 0
     }
 
@@ -47,6 +64,18 @@ namespace jdc {
      */
     //% shim=jdc::numServiceInstances
     export function numServiceInstances(serviceClass: number): number {
-        return 0
+        const state = jacdacState()
+        if (!state) return 0
+
+        const devices = jacdacState().devices
+        let count = 0
+        for (let d = 0; d < devices.length; d++) {
+            const dev = devices[d]
+            for (let s = 0; s < dev.services.length; s++) {
+                const srv = dev.services[s]
+                if (srv.serviceClass === serviceClass) count++
+            }
+        }
+        return count
     }
 }
