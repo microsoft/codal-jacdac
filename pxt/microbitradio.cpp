@@ -86,7 +86,12 @@ void bitradio_process(srv_t *state) {
                 } else {
                     memcpy(&v, buf + 9, 8);
                 }
-                jd_send(state->service_index, JD_BIT_RADIO_CMD_NUMBER_RECEIVED, &v, 8);
+                jd_bit_radio_number_received_report_t rep;
+                memcpy(&rep.time, buf + 1, 4);
+                memcpy(&rep.device_serial_number, buf + 5, 4);
+                rep.value = v;
+                rep.rssi = state->radio->getRSSI();
+                jd_send(state->service_index, JD_BIT_RADIO_CMD_NUMBER_RECEIVED, &rep, sizeof(rep));
             }
         }
     }
