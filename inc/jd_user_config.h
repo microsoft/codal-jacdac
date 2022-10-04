@@ -42,3 +42,6 @@ int mbbridge_send_frame(void *frame);
 
 void jdhw_poke(void);
 #define JD_WAKE_MAIN() jdhw_poke()
+
+#define JD_GC_KB 4
+

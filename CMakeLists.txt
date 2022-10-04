@@ -4,6 +4,7 @@ include("${CODAL_UTILS_LOCATION}")
 
 # find sources and headers
 RECURSIVE_FIND_FILE(SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/source" "*.c??")
+RECURSIVE_FIND_FILE(JACSCRIPT_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/jacdac-c/jacscript" "*.c")
 
 list(APPEND INCLUDE_DIRS
     "${CMAKE_CURRENT_SOURCE_DIR}/inc"
@@ -13,6 +14,7 @@ list(APPEND INCLUDE_DIRS
 )
 
 list(APPEND SOURCE_FILES
+    ${JACSCRIPT_SOURCE_FILES}
     "jacdac-c/source/jd_control.c"
     "jacdac-c/source/jd_ipipe.c"
     "jacdac-c/source/jd_opipe.c"
@@ -37,20 +39,6 @@ list(APPEND SOURCE_FILES
     "jacdac-c/services/jd_env.c"
     "jacdac-c/client/rolemgr.c"
     "jacdac-c/client/routing.c"
-    "jacdac-c/jacscript/aggbuffer.c"
-    "jacdac-c/jacscript/buffer.c"
-    "jacdac-c/jacscript/fibers.c"
-    "jacdac-c/jacscript/jacscript.c"
-    "jacdac-c/jacscript/jacscriptmgr.c"
-    "jacdac-c/jacscript/jdiface.c"
-    "jacdac-c/jacscript/regcache.c"
-    "jacdac-c/jacscript/stmt.c"
-    "jacdac-c/jacscript/expr.c"
-    "jacdac-c/jacscript/strformat.c"
-    "jacdac-c/jacscript/value.c"
-    "jacdac-c/jacscript/verify.c"
-    "jacdac-c/jacscript/jacscloud.c"
-    "jacdac-c/jacscript/tsagg.c"
     "jacdac-c/jacdac/dist/c/jd_spec_pack.c"
     "jacdac-c/storage/ff/ff.c"
     "jacdac-c/storage/lstore.c"
