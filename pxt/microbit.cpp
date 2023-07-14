@@ -231,7 +231,7 @@ extern "C" void init_local_services(void) {
     dotmatrix_init();
     soundplayer_init(audio);
     cbuzzer_init(&audio->virtualOutputPin);
-    // lightlevel_init(getLightLevel);
+    lightlevel_init(getLightLevel);
 
     NVIC_SetPriority(TIMER1_IRQn, 7);       // System timer (general purpose)
     NVIC_SetPriority(TIMER2_IRQn, 5);       // ADC timer.
