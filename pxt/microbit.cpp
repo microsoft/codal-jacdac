@@ -62,10 +62,14 @@ extern "C" void accelerometer_data_transform(int32_t sample[3]) {}
 static const uint8_t row_pins[5] = {21, 22, 15, 24, 19};
 static const uint8_t col_pins[5] = {28, 11, 31, P1_5, 30};
 
+
 static const MatrixPoint ledMatrixPositions[5 * 5] = {
-    {0, 0}, {0, 1}, {0, 2}, {0, 3}, {0, 4}, {1, 0}, {1, 1}, {1, 2}, {1, 3},
-    {1, 4}, {2, 0}, {2, 1}, {2, 2}, {2, 3}, {2, 4}, {3, 0}, {3, 1}, {3, 2},
-    {3, 3}, {3, 4}, {4, 0}, {4, 1}, {4, 2}, {4, 3}, {4, 4}};
+    {0, 0}, {0, 1}, {0, 2}, {0, 3}, {0, 4}, 
+    {1, 0}, {1, 1}, {1, 2}, {1, 3}, {1, 4}, 
+    {2, 0}, {2, 1}, {2, 2}, {2, 3}, {2, 4}, 
+    {3, 0}, {3, 1}, {3, 2}, {3, 3}, {3, 4}, 
+    {4, 0}, {4, 1}, {4, 2}, {4, 3}, {4, 4}
+};
 
 static MicroBitDisplay *display;
 static uint8_t disp_br = 255;
@@ -110,7 +114,7 @@ void disp_show(uint8_t *img) {
     disp_refresh();
 }
 
-void disp_set_brigthness(uint16_t v) {
+void disp_set_brightness(uint16_t v) {
     disp_br = v >> 8;
     disp_refresh();
 }
@@ -237,13 +241,18 @@ extern "C" void init_local_services(void) {
     NVIC_SetPriority(TIMER2_IRQn, 5);       // ADC timer.
     NVIC_SetPriority(TIMER3_IRQn, 3);       // Cap touch.
     NVIC_SetPriority(TIMER4_IRQn, 3);       // Display and Light Sensing.
+
     NVIC_SetPriority(SAADC_IRQn, 5);        // Analogue to Digital Converter (microphone etc)
     NVIC_SetPriority(PWM0_IRQn, 5);         // General Purpose PWM on edge connector
     NVIC_SetPriority(PWM1_IRQn, 4);         // PCM audio on speaker (high definition sound)
     NVIC_SetPriority(PWM2_IRQn, 3);         // Waveform Generation (neopixel)
+
     NVIC_SetPriority(RADIO_IRQn, 4);        // Packet radio
     NVIC_SetPriority(UARTE0_UART0_IRQn, 2); // Serial port
     NVIC_SetPriority(GPIOTE_IRQn, 2);       // Pin interrupt events
 
+    NRF_CLOCK->EVENTS_HFCLKSTARTED = 0;
+    NRF_CLOCK->TASKS_HFCLKSTART = 1;
+    while (NRF_CLOCK->EVENTS_HFCLKSTARTED == 0);
 #endif
 }
