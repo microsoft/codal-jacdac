@@ -115,7 +115,7 @@ void disp_show(uint8_t *img) {
     disp_refresh();
 }
 
-void disp_set_brightness(uint16_t v) {
+void disp_set_brigthness(uint16_t v) {
     disp_br = v >> 8;
     disp_refresh();
 }
