@@ -1,6 +1,7 @@
 #include "jdc.h"
 
 #ifdef IS_MICROBIT
+#include "Timer.h"
 #include "MicroBitThermometer.h"
 #include "MicroBitAccelerometer.h"
 #include "MicroBitI2C.h"
