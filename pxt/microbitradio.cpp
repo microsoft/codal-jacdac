@@ -94,13 +94,13 @@ void bitradio_process(srv_t *state) {
                 jd_send(state->service_index, JD_BIT_RADIO_CMD_NUMBER_RECEIVED, &rep, sizeof(rep));
             } else if (buf[0] == PACKET_TYPE_BUFFER) {
                 // // payload: buffer length (9), buffer (10 ... 28)
-                uint8_t len = buf[9]; // correct??
-                jd_bit_radio_number_received_report_t rep;
+                jd_bit_radio_buffer_received_report_t rep;
                 memcpy(&rep.time, buf + 1, 4);
                 memcpy(&rep.device_serial_number, buf + 5, 4);
-                rep.value = v;
+                rep.padding = buf[9];
+                rep.data = buf + 10;  // TODO: alloc and copy
                 rep.rssi = state->radio->getRSSI();
-                jd_send(state->service_index, JD_BIT_RADIO_CMD_NUMBER_RECEIVED, &rep, sizeof(rep));
+                jd_send(state->service_index, JD_BIT_RADIO_CMD_BUFFER_RECEIVED, &rep, sizeof(rep));
             }
         }
     }
