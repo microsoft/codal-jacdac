@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> The Jacdac project has moved to https://github.com/jacdac.  
+
 # Project
 
 > This repo has been populated by an initial template to help get you started. Please
